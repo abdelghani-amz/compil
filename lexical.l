@@ -14,7 +14,7 @@ cstInt {chiffre}+|-{chiffre}+|\([ \t]*-?{chiffre}+[ \t]*\)
 cstReal {chiffre}+\.{chiffre}+|\([ \t]*-?{chiffre}+\.{chiffre}+[ \t]*\)
 caracter \'.\'
 chaine 	\".+\"
-text 	({chiffre}|{lettre})*|({lettre}|{chiffre})* 
+text 	 [a-zA-Z0-9]* 
 
 %%
 
