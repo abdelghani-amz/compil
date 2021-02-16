@@ -1,5 +1,7 @@
 %{
-#include <stdio.h>
+	#include <stdio.h>
+	int nb_ligne = 1;
+	int col = 1;
 %}
 %token mc_pgm mc_integer mc_real mc_string mc_char mc_process mc_loop mc_array mc_var mc_const mc_eg mc_sup mc_supe mc_diff mc_infe mc_inf division addition substraction multi idf idftab cstInt cstReal car chaine dz dpts egality aff acc_o acc_f cro_o cro_f fin sep read write dots s_real s_string s_char par_o par_f text address separator
 %start S
@@ -24,6 +26,7 @@ DECLARATION : mc_var LIST_DEC mc_const LIST_DEC_CONST
 
 
 CST : cstInt | cstReal ;
+IDF : idf | idftab;
 
 LIST_DEC_CONST : DEC_CST LIST_DEC_CONST
 	       | DEC_CST
@@ -32,7 +35,7 @@ LIST_DEC_CONST : DEC_CST LIST_DEC_CONST
 DEC_CST : mc_char dpts LIST_IDF_CST_CHAR fin
 		| mc_string dpts LIST_IDF_CST_STR fin
 		| mc_real dpts LIST_IDF_CST_REAL fin
-		| mc_real dpts LIST_IDF_CST_INT fin
+		| mc_integer dpts LIST_IDF_CST_INT fin
 ;
 
 LIST_IDF_CST_CHAR: idf egality car sep  LIST_IDF_CST_STR
@@ -74,13 +77,44 @@ INSTS : INST INSTS
 	|
 ;
 
-INST : INST_ARITH 
+INST : INST_AFF 
+     | INST_ARITH 
      | INPUT
      | OUTPUT
 ;
 
-INST_ARITH : idf aff INST_ARITH_PATTERN fin
+INST_AFF :  IDF aff CST fin
+	 |  IDF aff IDF fin
+	 |  IDF aff par_o IDF par_f fin
+	 | IDF aff INST_ARITH
 ;
+
+
+INST_ARITH : EXPRESSION fin
+			| EXPRESSION_PAR fin
+			
+			
+;
+
+EXPRESSION_PAR : // An expression that can generate parenthesis
+		| par_o EXPRESSION par_f OPERATION EXPRESSION
+		| par_o EXPRESSION par_f OPERATION OPERAND
+		| par_o EXPRESSION par_f OPERATION EXPRESSION_PAR
+		| par_o EXPRESSION_PAR par_f OPERATION OPERAND
+		| par_o EXPRESSION_PAR par_f OPERAND EXPRESSION
+		| par_o EXPRESSION_PAR par_f OPERATION EXPRESSION
+		| par_o EXPRESSION par_f
+		| par_o EXPRESSION_PAR par_f
+				
+;
+		
+EXPRESSION : OPERAND OPERATION OPERAND 
+			| OPERAND OPERATION EXPRESSION_PAR
+			| OPERAND OPERATION EXPRESSION
+			
+;
+
+OPERAND : CST | IDF | par_o IDF par_f ;
 
 OPERATION : addition
 	  | division
@@ -88,18 +122,13 @@ OPERATION : addition
 	  | multi
 ;
 
-INST_ARITH_PATTERN :  idf OPERATION INST_ARITH_PATTERN
-		    | CST OPERATION INST_ARITH_PATTERN	
-		    | CST 
-		    | idf 		    
-;
 
 INPUT :  read par_o dots SIGNS dots separator address idf par_f fin
 ;
 
-OUTPUT : write par_o dots text SIGNS dots LIST_OUT_IDF par_f fin {printf("im a fag ")}
-		|  write par_o dots text dots par_f fin	
+OUTPUT : write par_o chaine LIST_OUT_IDF par_f fin 
 ;
+
 
 LIST_OUT_IDF : separator idf LIST_OUT_IDF
 	     | separator idf
@@ -120,4 +149,8 @@ main()
 yywrap()
 {} 
 
+yyerror (char*msg)
+{
+	printf("Erreur Syntaxique \nline : %d || colonne : %d\n ", nb_ligne, col);
+}
 
