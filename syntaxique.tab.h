@@ -85,7 +85,12 @@
      par_f = 301,
      text = 302,
      address = 303,
-     separator = 304
+     separator = 304,
+     exe = 305,
+     mc_if = 306,
+     mc_while = 307,
+     end = 308,
+     mc_else = 309
    };
 #endif
 
