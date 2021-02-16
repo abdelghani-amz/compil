@@ -85,11 +85,23 @@ INST : INST_AFF
 
 INST_AFF :  IDF aff CST fin
 	 |  IDF aff IDF fin
+	 |  IDF aff par_o IDF par_f fin
+	 |  IDF aff par_o CST par_f fin
 ;
+
+
 
 INST_ARITH : IDF aff IDF INST_ARITH_PATTERN fin
 	   | IDF aff CST INST_ARITH_PATTERN fin
+	   | IDF aff par_o IDF par_f INST_ARITH_PATTERN fin
+	   | IDF aff par_o CST par_f INST_ARITH_PATTERN fin
+	   | IDF aff par_o IDF INST_ARITH_PATTERN par_f fin
+	   | IDF aff par_o CST INST_ARITH_PATTERN par_f fin
+	   | IDF aff par_o CST INST_ARITH_PATTERN  fin
+	   | IDF aff par_o IDF INST_ARITH_PATTERN  fin
 ;
+
+
 
 OPERATION : addition
 	  | division
@@ -97,8 +109,20 @@ OPERATION : addition
 	  | multi
 ;
 
+
+
 INST_ARITH_PATTERN : OPERATION IDF INST_ARITH_PATTERN
 		   | OPERATION CST INST_ARITH_PATTERN
+
+		   | OPERATION par_o IDF par_f INST_ARITH_PATTERN
+		   | OPERATION par_o CST par_f INST_ARITH_PATTERN
+
+		   | OPERATION par_o IDF INST_ARITH_PATTERN par_f 
+		   | OPERATION par_o CST INST_ARITH_PATTERN par_f 
+
+		   | OPERATION par_o IDF par_f 
+		   | OPERATION par_o CST par_f
+
 		   | OPERATION IDF
 		   | OPERATION CST
 ;
