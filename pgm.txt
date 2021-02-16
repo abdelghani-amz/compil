@@ -3,7 +3,9 @@
 
 Programme Xe
 {
-CONST REAL :: Value = 2 // Value2 = 3 $
+CONST REAL :: Value = 2.5 // Value2 = 3.5 $
+STRING :: Jeff = "jeff" $
+CHAR :: Char = 'a' $
 
 VAR REAL :: Value22  // Value222  $
 REAL :: Table[5]$
@@ -14,12 +16,12 @@ Value2 := Table[5] - 4$
 
 Value := Value2 - 3 + V2 / 1 - Table[5] $
 
-Test := ( Test ) $
-Test1 := ( -3 ) $
+Test := (Test) $
+Test1 := (-3) $
 
 Value := (Value2 + 3) $
-Value := (Value2) + 3 $
-Value := ( 3 ) + Value $
+
+Value := (3) + Value $
 Value := ( -3 ) + Value $
 
 Value := (Value2) + (3) $
@@ -41,5 +43,5 @@ WRITE ( "chaine"  | Idf) $
 WRITE ( "chaine"  | Idf |IDF2) $ 
 
 
-Value :=   ( Value2 + -3 ) / ( -5 +  ValueA ) $ 
+Value :=   ( ( (Value2) + -3) * ( -5 +  ValueA ) ) $ 
 }

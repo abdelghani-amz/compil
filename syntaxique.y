@@ -35,7 +35,7 @@ LIST_DEC_CONST : DEC_CST LIST_DEC_CONST
 DEC_CST : mc_char dpts LIST_IDF_CST_CHAR fin
 		| mc_string dpts LIST_IDF_CST_STR fin
 		| mc_real dpts LIST_IDF_CST_REAL fin
-		| mc_real dpts LIST_IDF_CST_INT fin
+		| mc_integer dpts LIST_IDF_CST_INT fin
 ;
 
 LIST_IDF_CST_CHAR: idf egality car sep  LIST_IDF_CST_STR
@@ -86,22 +86,35 @@ INST : INST_AFF
 INST_AFF :  IDF aff CST fin
 	 |  IDF aff IDF fin
 	 |  IDF aff par_o IDF par_f fin
-	 |  IDF aff par_o CST par_f fin
+	 | IDF aff INST_ARITH
 ;
 
 
-
-INST_ARITH : IDF aff IDF INST_ARITH_PATTERN fin
-	   | IDF aff CST INST_ARITH_PATTERN fin
-	   | IDF aff par_o IDF par_f INST_ARITH_PATTERN fin
-	   | IDF aff par_o CST par_f INST_ARITH_PATTERN fin
-	   | IDF aff par_o IDF INST_ARITH_PATTERN par_f fin
-	   | IDF aff par_o CST INST_ARITH_PATTERN par_f fin
-	   | IDF aff par_o CST INST_ARITH_PATTERN  fin
-	   | IDF aff par_o IDF INST_ARITH_PATTERN  fin
+INST_ARITH : EXPRESSION fin
+			| EXPRESSION_PAR fin
+			
+			
 ;
 
+EXPRESSION_PAR : // An expression that can generate parenthesis
+		| par_o EXPRESSION par_f OPERATION EXPRESSION
+		| par_o EXPRESSION par_f OPERATION OPERAND
+		| par_o EXPRESSION par_f OPERATION EXPRESSION_PAR
+		| par_o EXPRESSION_PAR par_f OPERATION OPERAND
+		| par_o EXPRESSION_PAR par_f OPERAND EXPRESSION
+		| par_o EXPRESSION_PAR par_f OPERATION EXPRESSION
+		| par_o EXPRESSION par_f
+		| par_o EXPRESSION_PAR par_f
+				
+;
+		
+EXPRESSION : OPERAND OPERATION OPERAND 
+			| OPERAND OPERATION EXPRESSION_PAR
+			| OPERAND OPERATION EXPRESSION
+			
+;
 
+OPERAND : CST | IDF | par_o IDF par_f ;
 
 OPERATION : addition
 	  | division
@@ -109,23 +122,6 @@ OPERATION : addition
 	  | multi
 ;
 
-
-
-INST_ARITH_PATTERN : OPERATION IDF INST_ARITH_PATTERN
-		   | OPERATION CST INST_ARITH_PATTERN
-
-		   | OPERATION par_o IDF par_f INST_ARITH_PATTERN
-		   | OPERATION par_o CST par_f INST_ARITH_PATTERN
-
-		   | OPERATION par_o IDF INST_ARITH_PATTERN par_f 
-		   | OPERATION par_o CST INST_ARITH_PATTERN par_f 
-
-		   | OPERATION par_o IDF par_f 
-		   | OPERATION par_o CST par_f
-
-		   | OPERATION IDF
-		   | OPERATION CST
-;
 
 INPUT :  read par_o dots SIGNS dots separator address idf par_f fin
 ;
@@ -155,6 +151,6 @@ yywrap()
 
 yyerror (char*msg)
 {
-	printf("Erreur Syntaxique \nline : %d || colonne : %d\n", nb_ligne, col);
+	printf("Erreur Syntaxique \nline : %d || colonne : %d\n ", nb_ligne, col);
 }
 
