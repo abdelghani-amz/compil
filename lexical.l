@@ -30,8 +30,11 @@ VAR		{ col = col + strlen(yytext); return mc_var;}
 CONST		{ col = col + strlen(yytext); return mc_const;}
 READ		{ col = col + strlen(yytext); return read;}
 WRITE		{ col = col + strlen(yytext); return write;}
-
-
+EXECUT     { col = col + strlen(yytext); return exe;}
+IF 			{ col = col + strlen(yytext); return mc_if;}
+WHILE		{ col = col + strlen(yytext); return mc_while;}
+END_IF		{ col = col + strlen(yytext); return end;}
+ELSE		{ col = col + strlen(yytext); return mc_else;}
 
 
 
