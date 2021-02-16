@@ -1,6 +1,7 @@
 %{
 	#include "syntaxique.tab.h"
-	int nb_ligne=1;
+	extern nb_ligne;
+	extern col;
 %}
 
 lettreM [A-Z]
@@ -16,66 +17,83 @@ text 	({chiffre}|{lettre})*|({lettre}|{chiffre})*
 
 %%
 
-Programme	return mc_pgm;
-INTEGER		return mc_integer;
-REAL		return mc_real;
-STRING		return mc_string;
-CHAR		return mc_char;
-PROCESS		return mc_process;
-LOOP		return mc_loop;
-ARRAY		return mc_array;
-VAR			return mc_var;
-CONST		return mc_const;
-READ		return read;
-WRITE		return write;
-''			{printf("im gay");return dots;}
-"%"		return s_real;
-"#"		return s_string;
-"&"		return s_char;
+Programme	{ col = col + strlen(yytext); return mc_pgm;}
+INTEGER		{ col = col + strlen(yytext); return mc_integer;}
+REAL		{ col = col + strlen(yytext); return mc_real;}
+STRING		{ col = col + strlen(yytext); return mc_string;}
+CHAR		{ col = col + strlen(yytext); return mc_char;}
+PROCESS		{ col = col + strlen(yytext); return mc_process;}
+LOOP		{ col = col + strlen(yytext); return mc_loop;}
+ARRAY		{ col = col + strlen(yytext); return mc_array;}
+VAR		{ col = col + strlen(yytext); return mc_var;}
+CONST		{ col = col + strlen(yytext); return mc_const;}
+READ		{ col = col + strlen(yytext); return read;}
+WRITE		{ col = col + strlen(yytext); return write;}
 
 
 
-EG		return mc_eg;
-SUP		return mc_sup;
-SUPE		return mc_supe;
-DIFF		return mc_diff;
-INFE		return mc_infe;
-INF		return mc_inf;
-
-"/"		return division;
-"+"		return addition;
-"-"		return substraction;
-"*"		return multi;
-"@"		return address;
-"|"		return separator;
 
 
-{IDF} 	       {printf("Identificateur %s accepte !! \n",yytext); return idf;}
-{IDFtab}		{printf("Identificateur %s accepte !! \n",yytext); return idftab;}
-{cstInt} 		return cstInt;
-{cstReal}		return cstReal;
-{caracter}		return car ;
-{chaine}		return chaine ;
-{text}			return text ;
+EG		{ col = col + strlen(yytext); return mc_eg;}
+SUP		{ col = col + strlen(yytext); return mc_sup;}
+SUPE		{ col = col + strlen(yytext); return mc_supe;}
+DIFF		{ col = col + strlen(yytext); return mc_diff;}
+INFE		{ col = col + strlen(yytext); return mc_infe;}
+INF		{ col = col + strlen(yytext); return mc_inf;}
 
-"##"		return dz;
+"/"		{ col = col + strlen(yytext); return division;}
+"+"		{ col = col + strlen(yytext); return addition;}
+"-"		{ col = col + strlen(yytext); return substraction;}
+"*"		{ col = col + strlen(yytext); return multi;}
+"@"		{ col = col + strlen(yytext); return address;}
+"|"		{ col = col + strlen(yytext); return separator;}
 
 
-"::"		return dpts;
-"="		return egality;
-":="		return aff;
+{IDF} 	       { col = col + strlen(yytext);
+		 if (yyleng<10) { printf ("Identificateur %s accepte !! \n",yytext); 
+				  return idf;
+				}
+		 else printf ("Identificateur %s refused : length %d is too large on line %d Colonne %d \n", yytext, yyleng, nb_ligne, col-strlen(yytext)); 
+		  }
 
-"("		return par_o;
-")"		return par_f;
-"{"		return acc_o;
-"}"		return acc_f;
-"["		return cro_o;
-"]"		return cro_f;
-"$"		return fin;
-"//"		return sep;
-[ \t]
-\n		nb_ligne++;
-. printf("Erreur lexicale %s � la ligne %d\n",yytext ,nb_ligne);
+{IDFtab}	{ col = col + strlen(yytext);
+		   if (yyleng<10) { printf ("Identificateur %s accepte !! \n",yytext); 
+				    return idftab;
+				    }
+		   else printf ("Identificateur %s refused : length %d is too large on line %d Colonne %d \n", yytext, yyleng, nb_ligne, col-strlen(yytext)); 
+		  }
+
+{cstInt} 		{ col = col + strlen(yytext); return cstInt;}
+{cstReal}		{ col = col + strlen(yytext); return cstReal;}
+{caracter}		{ col = col + strlen(yytext); return car ;}
+{chaine}		{ col = col + strlen(yytext); return chaine ;}
+{text}			{ col = col + strlen(yytext); return text ;}
+
+"##"		{ col = col + strlen(yytext); return dz;}
+
+
+"::"		{ col = col + strlen(yytext); return dpts;}
+"="		{ col = col + strlen(yytext); return egality;}
+":="		{ col = col + strlen(yytext); return aff;}
+
+"("		{ col = col + strlen(yytext);return par_o;}
+")"		{ col = col + strlen(yytext);return par_f;}
+"{"		{ col = col + strlen(yytext); return acc_o;}
+"}"		{ col = col + strlen(yytext); return acc_f;}
+"["		{ col = col + strlen(yytext); return cro_o;}
+"]"		{ col = col + strlen(yytext); return cro_f;}
+
+"''"		{ col = col + strlen(yytext); return dots;}
+"$"		{ col = col + strlen(yytext); return fin;}
+"%"		{ col = col + strlen(yytext); return s_real;}
+"#"		{ col = col + strlen(yytext); return s_string;}
+"&"		{ col = col + strlen(yytext); return s_char;}
+
+"//"		{ col = col + strlen(yytext); return sep;}
+[ \t]		{ col = col + strlen(yytext);  }
+\n		{nb_ligne++; col=1;}
+
+. printf("Erreur lexicale : %s \nligne %d Colonne %d\n",yytext ,nb_ligne, col);
 
 
 

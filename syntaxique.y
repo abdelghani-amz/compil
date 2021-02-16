@@ -1,5 +1,7 @@
 %{
-#include <stdio.h>
+	#include <stdio.h>
+	int nb_ligne = 1;
+	int col = 1;
 %}
 %token mc_pgm mc_integer mc_real mc_string mc_char mc_process mc_loop mc_array mc_var mc_const mc_eg mc_sup mc_supe mc_diff mc_infe mc_inf division addition substraction multi idf idftab cstInt cstReal car chaine dz dpts egality aff acc_o acc_f cro_o cro_f fin sep read write dots s_real s_string s_char par_o par_f text address separator
 %start S
@@ -24,6 +26,7 @@ DECLARATION : mc_var LIST_DEC mc_const LIST_DEC_CONST
 
 
 CST : cstInt | cstReal ;
+IDF : idf | idftab;
 
 LIST_DEC_CONST : DEC_CST LIST_DEC_CONST
 	       | DEC_CST
@@ -74,12 +77,18 @@ INSTS : INST INSTS
 	|
 ;
 
-INST : INST_ARITH 
+INST : INST_AFF 
+     | INST_ARITH 
      | INPUT
      | OUTPUT
 ;
 
-INST_ARITH : idf aff INST_ARITH_PATTERN fin
+INST_AFF :  IDF aff CST fin
+	 |  IDF aff IDF fin
+;
+
+INST_ARITH : IDF aff IDF INST_ARITH_PATTERN fin
+	   | IDF aff CST INST_ARITH_PATTERN fin
 ;
 
 OPERATION : addition
@@ -88,18 +97,18 @@ OPERATION : addition
 	  | multi
 ;
 
-INST_ARITH_PATTERN :  idf OPERATION INST_ARITH_PATTERN
-		    | CST OPERATION INST_ARITH_PATTERN	
-		    | CST 
-		    | idf 		    
+INST_ARITH_PATTERN : OPERATION IDF INST_ARITH_PATTERN
+		   | OPERATION CST INST_ARITH_PATTERN
+		   | OPERATION IDF
+		   | OPERATION CST
 ;
 
 INPUT :  read par_o dots SIGNS dots separator address idf par_f fin
 ;
 
-OUTPUT : write par_o dots text SIGNS dots LIST_OUT_IDF par_f fin {printf("im a fag ")}
-		|  write par_o dots text dots par_f fin	
+OUTPUT : write par_o chaine LIST_OUT_IDF par_f fin 
 ;
+
 
 LIST_OUT_IDF : separator idf LIST_OUT_IDF
 	     | separator idf
@@ -120,4 +129,8 @@ main()
 yywrap()
 {} 
 
+yyerror (char*msg)
+{
+	printf("Erreur Syntaxique \nline : %d || colonne : %d\n", nb_ligne, col);
+}
 
