@@ -3,13 +3,18 @@
 	int nb_ligne = 1;
 	int col = 1;
 %}
-%token mc_pgm mc_integer mc_real mc_string mc_char mc_process mc_loop mc_array mc_var mc_const mc_eg mc_sup mc_supe mc_diff mc_infe mc_inf division addition substraction multi idf idftab cstInt cstReal car chaine dz dpts egality aff acc_o acc_f cro_o cro_f fin sep read write dots s_real s_string s_char par_o par_f text address separator exe mc_if mc_while end mc_else
+%token mc_pgm mc_integer mc_real mc_string mc_char mc_process mc_loop mc_array mc_var mc_const mc_eg mc_sup mc_supe mc_diff mc_infe mc_inf division addition substraction multi idf idftab cstInt cstReal car chaine dz dpts egality aff acc_o acc_f cro_o cro_f fin sep read write dots s_real s_string s_char par_o par_f text address separator exe mc_if mc_while end mc_else 
 %start S
 %%
 S : LIST_BIB mc_pgm idf acc_o DECLARATION INSTS acc_f {printf("Programme syntaxiquement correct"); YYACCEPT;}
+
 LIST_BIB : BIB LIST_BIB 
-	 | 
+	 |
 ;
+
+
+
+
 
 BIB : dz NAME_BIB fin;
 
@@ -74,7 +79,7 @@ TYPE :	 mc_char
 
 
 INSTS : INST INSTS
-	|
+	| 
 ;
 
 INST : INST_AFF 
@@ -83,6 +88,7 @@ INST : INST_AFF
      | OUTPUT
 	 | IF_STATEMENT
 	 | LOOP
+	 
 ;
 
 INST_AFF :  IDF aff CST fin
@@ -162,6 +168,9 @@ LOGIC : mc_inf
 
 LOOP : mc_while CONDITION acc_o INSTS acc_f
 ;
+
+
+
 
 %%
 main()

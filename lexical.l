@@ -14,7 +14,8 @@ cstInt {chiffre}+|-{chiffre}+|\([ \t]*-?{chiffre}+[ \t]*\)
 cstReal {chiffre}+\.{chiffre}+|\([ \t]*-?{chiffre}+\.{chiffre}+[ \t]*\)
 caracter \'.\'
 chaine 	\".+\"
-text 	 [a-zA-Z0-9]* 
+comment \/\*.+\*\/
+text 	 ({chiffre}|{lettre})*|({lettre}|{chiffre})*
 
 %%
 
@@ -42,8 +43,8 @@ EG		{ col = col + strlen(yytext); return mc_eg;}
 SUP		{ col = col + strlen(yytext); return mc_sup;}
 SUPE		{ col = col + strlen(yytext); return mc_supe;}
 DIFF		{ col = col + strlen(yytext); return mc_diff;}
-INFE		{ col = col + strlen(yytext); return mc_infe;}
-INF		{ col = col + strlen(yytext); return mc_inf;}
+"<="		{ col = col + strlen(yytext); return mc_infe;}
+"<"		{ col = col + strlen(yytext); return mc_inf;}
 
 "/"		{ col = col + strlen(yytext); return division;}
 "+"		{ col = col + strlen(yytext); return addition;}
@@ -51,6 +52,7 @@ INF		{ col = col + strlen(yytext); return mc_inf;}
 "*"		{ col = col + strlen(yytext); return multi;}
 "@"		{ col = col + strlen(yytext); return address;}
 "|"		{ col = col + strlen(yytext); return separator;}
+
 
 
 {IDF} 	       { col = col + strlen(yytext);
@@ -67,10 +69,11 @@ INF		{ col = col + strlen(yytext); return mc_inf;}
 		   else printf ("Identificateur %s refused : length %d is too large on line %d Colonne %d \n", yytext, yyleng, nb_ligne, col-strlen(yytext)); 
 		  }
 
-{cstInt} 		{ col = col + strlen(yytext); return cstInt;}
+{cstInt} 		{ col = col + strlen(yytext);printf("int = %s  \n",yytext) ;return cstInt;}
 {cstReal}		{ col = col + strlen(yytext); return cstReal;}
 {caracter}		{ col = col + strlen(yytext); return car ;}
 {chaine}		{ col = col + strlen(yytext); return chaine ;}
+{comment}		{ col = col + strlen(yytext); }
 {text}			{ col = col + strlen(yytext); return text ;}
 
 "##"		{ col = col + strlen(yytext); return dz;}
