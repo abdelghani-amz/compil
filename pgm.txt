@@ -47,26 +47,26 @@ Value :=   ( ( (Value2) + -3) * ( -5 +  ValueA ) ) $
 
 	EXECUT READ ('' & '' | @ Vdf ) $ 
 	/* this is a  comment */
-IF (1 != 2 )
+IF (1 DIFF 2 )
 ELSE
 	EXECUT WRITE ( "chaine"  | Idf) $ 
 END_IF
 
 
 /* this is a  comment */
-	EXECUT WHILE (1 == 2 )
+	EXECUT WHILE (1 EG 2 )
 	{	
 		READ ('' & '' | @ Vdf ) $ 
 		WRITE ( "chaine"  | Idf) $ 
 		WRITE ( "chaine"  | Idf |IDF2) $ 
 		Value :=   ( ( (Value2) + -3) * ( -5 +  ValueA ) ) $ 
 	}
-IF (1 > 2 )
+IF (1 SUP 2 )
 ELSE
 	EXECUT WRITE ( "chaine"  | Idf) $ 
 END_IF
 
-WHILE (1 < 2 )
+WHILE (1 INF 2 )
 {
 	READ ('' & '' | @ Vdf ) $ 
 	WRITE ( "chaine"  | Idf) $ 

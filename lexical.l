@@ -43,8 +43,8 @@ EG		{ col = col + strlen(yytext); return mc_eg;}
 SUP		{ col = col + strlen(yytext); return mc_sup;}
 SUPE		{ col = col + strlen(yytext); return mc_supe;}
 DIFF		{ col = col + strlen(yytext); return mc_diff;}
-"<="		{ col = col + strlen(yytext); return mc_infe;}
-"<"		{ col = col + strlen(yytext); return mc_inf;}
+INFE		{ col = col + strlen(yytext); return mc_infe;}
+INF		{ col = col + strlen(yytext); return mc_inf;}
 
 "/"		{ col = col + strlen(yytext); return division;}
 "+"		{ col = col + strlen(yytext); return addition;}
