@@ -67,7 +67,7 @@ INF		{ col = col + strlen(yytext); return mc_inf;}
 		   else printf ("Identificateur %s refused : length %d is too large on line %d Colonne %d \n", yytext, yyleng, nb_ligne, col-strlen(yytext)); 
 		  }
 
-{cstInt} 		{ col = col + strlen(yytext);printf("int = %s  \n",yytext) ;return cstInt;}
+{cstInt} 		{ col = col + strlen(yytext); return cstInt;}
 {cstReal}		{ col = col + strlen(yytext); return cstReal;}
 {caracter}		{ col = col + strlen(yytext); return car ;}
 {chaine}		{ col = col + strlen(yytext); return chaine ;}

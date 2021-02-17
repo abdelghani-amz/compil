@@ -893,7 +893,7 @@ YY_RULE_SETUP
 case 32:
 YY_RULE_SETUP
 #line 70 "lexical.l"
-{ col = col + strlen(yytext);printf("int = %s  \n",yytext) ;return cstInt;}
+{ col = col + strlen(yytext); return cstInt;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
