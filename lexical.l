@@ -3,6 +3,8 @@
 	extern nb_ligne;
 	extern col;
 	extern current ; 
+	#include "ts.h"
+	extern YYSTYPE yylval;
 %}
 
 lettreM [A-Z]
@@ -19,84 +21,85 @@ text 	 ({chiffre}|{lettre})*|({lettre}|{chiffre})*
 
 %%
 
-Programme	{ col = col + strlen(yytext); return mc_pgm;}
-INTEGER		{ col = col + strlen(yytext); return mc_integer;}
-REAL		{ col = col + strlen(yytext); return mc_real;}
-STRING		{ col = col + strlen(yytext); return mc_string;}
-CHAR		{ col = col + strlen(yytext); return mc_char;}
-PROCESS		{ col = col + strlen(yytext); return mc_process;}
-LOOP		{ col = col + strlen(yytext); return mc_loop;}
-ARRAY		{ col = col + strlen(yytext); return mc_array;}
-VAR		{ col = col + strlen(yytext); return mc_var;}
-CONST		{ col = col + strlen(yytext); return mc_const;}
-READ		{ col = col + strlen(yytext); return read;}
-WRITE		{ col = col + strlen(yytext); return write;}
-EXECUT     { col = col + strlen(yytext); return exe;}
-IF 			{ col = col + strlen(yytext); return mc_if;}
-WHILE		{ col = col + strlen(yytext); return mc_while;}
-END_IF		{ col = col + strlen(yytext); return end;}
-ELSE		{ col = col + strlen(yytext); return mc_else;}
+Programme	{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_pgm;}
+INTEGER		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_integer;}
+REAL		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_real;}
+STRING		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_string;}
+CHAR		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_char;}
+PROCESS		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_process;}
+LOOP		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_loop;}
+ARRAY		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_array;}
+VAR		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_var;}
+CONST		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_const;}
+READ		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return read;}
+WRITE		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return write;}
+EXECUT		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return exe;}
+IF 		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_if;}
+WHILE		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_while;}
+END_IF		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return end;}
+ELSE		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_else;}
 
 
 
-EG		{ col = col + strlen(yytext); return mc_eg;}
-SUP		{ col = col + strlen(yytext); return mc_sup;}
-SUPE		{ col = col + strlen(yytext); return mc_supe;}
-DIFF		{ col = col + strlen(yytext); return mc_diff;}
-INFE		{ col = col + strlen(yytext); return mc_infe;}
-INF		{ col = col + strlen(yytext); return mc_inf;}
+EG		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_eg;}
+SUP		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_sup;}
+SUPE		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_supe;}
+DIFF		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_diff;}
 
-"/"		{ col = col + strlen(yytext); return division;}
-"+"		{ col = col + strlen(yytext); return addition;}
-"-"		{ col = col + strlen(yytext); return substraction;}
-"*"		{ col = col + strlen(yytext); return multi;}
-"@"		{ col = col + strlen(yytext); return address;}
-"|"		{ col = col + strlen(yytext); return separator;}
+"/"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return division;}
+"+"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return addition;}
+"-"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return substraction;}
+"*"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return multi;}
+"@"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return address;}
+"|"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return separator;}
 
 
 
-{IDF} 	       { col = col + strlen(yytext);
-		 if (yyleng<10) { printf ("Identificateur %s accepte !! \n",yytext); 
+
+{IDF} 	       { rechercher (yytext,"IDF ","",0, 0); 
+		 col = col + strlen(yytext);
+		 if (yyleng<10) { yylval.str=strdup(yytext);
 				  return idf;
 				}
 		 else printf ("Identificateur %s refused : length %d is too large on line %d Colonne %d \n", yytext, yyleng, nb_ligne, col-strlen(yytext)); 
 		  }
 
-{IDFtab}	{ col = col + strlen(yytext);
-		   if (yyleng<10) { printf ("Identificateur %s accepte !! \n",yytext); 
+{IDFtab}	{  rechercher (yytext,"IDFtab ","",0, 0); 
+		   col = col + strlen(yytext);
+		   if (yyleng<10) { yylval.str=strdup(yytext);
 				    return idftab;
 				    }
 		   else printf ("Identificateur %s refused : length %d is too large on line %d Colonne %d \n", yytext, yyleng, nb_ligne, col-strlen(yytext)); 
 		  }
 
-{cstInt} 		{ col = col + strlen(yytext);printf("int = %s  \n",yytext) ;return cstInt;}
-{cstReal}		{ col = col + strlen(yytext); return cstReal;}
+{cstInt} 		{ rechercher (yytext,"Cst entiere ","entier",atoi(yytext), 0);  col = col + strlen(yytext);  yylval.entier= atoi(yytext); ;return cstInt;}
+{cstReal}		{ rechercher (yytext,"Cst real ","real",atof(yytext), 0);  col = col + strlen(yytext); yylval.real= atof(yytext); return cstReal;}
 {caracter}		{ col = col + strlen(yytext); return car ;}
-{chaine}		{ col = col + strlen(yytext); return chaine ;}
+{chaine}		{ col = col + strlen(yytext); return chaine;}
 {comment}		{ col = col + strlen(yytext); }
 {text}			{ col = col + strlen(yytext); return text ;}
 
-"##"		{ col = col + strlen(yytext); return dz;}
+"##"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return dz;}
 
 
-"::"		{ col = col + strlen(yytext); return dpts;}
-"="		{ col = col + strlen(yytext); return egality;}
-":="		{ col = col + strlen(yytext); return aff;}
+"::"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return dpts;}
+"="		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return egality;}
+":="		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return aff;}
 
-"("		{ col = col + strlen(yytext);return par_o;}
-")"		{ col = col + strlen(yytext);return par_f;}
-"{"		{ col = col + strlen(yytext); return acc_o;}
-"}"		{ col = col + strlen(yytext); return acc_f;}
-"["		{ col = col + strlen(yytext); return cro_o;}
-"]"		{ col = col + strlen(yytext); return cro_f;}
+"("		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext);return par_o;}
+")"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext);return par_f;}
+"{"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return acc_o;}
+"}"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return acc_f;}
+"["		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return cro_o;}
+"]"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return cro_f;}
 
-"''"		{ col = col + strlen(yytext); return dots;}
-"$"		{ col = col + strlen(yytext); return fin;}
-"%"		{ col = col + strlen(yytext); return s_real;}
-"#"		{ col = col + strlen(yytext); return s_string;}
-"&"		{ col = col + strlen(yytext); return s_char;}
+"''"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return dots;}
+"$"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return fin;}
+"%"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return s_real;}
+"#"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return s_string;}
+"&"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return s_char;}
 
-"//"		{ col = col + strlen(yytext); return sep;}
+"//"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return sep;}
 [ \t]		{ col = col + strlen(yytext);  }
 \n		{nb_ligne++; col=1;}
 
