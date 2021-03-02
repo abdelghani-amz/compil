@@ -11,6 +11,7 @@ typedef struct
    char code[20];
    char type[20];
    float val;
+
    char valCh[20];
  } element;
 
@@ -23,6 +24,7 @@ typedef struct
 } elt;
 
 element tab[1000];
+
 elt tabs[40],tabm[40];
 extern char sav[20];
 char chaine1 [] = "";
@@ -38,6 +40,7 @@ void initialisation()
   {
 	  tab[i].state=0; 
 	  strcpy(tab[i].type,chaine1);
+
     strcpy(tab[i].valCh,chaine1);
 	 
 	  
@@ -119,12 +122,10 @@ switch(y)
    	       //printf("entité existe déjà\n");
         break;
 
+
   }
 
 }
-
-
-//{chaine}		{ rechercherCh (yytext,"Cst chaine ", "chaine" ,yytext); yylval.chaine= atof(yytext);  col = col + strlen(yytext); return chaine;}
 
 
 
@@ -138,15 +139,19 @@ void insererCh (char entite[], char code[],char type[],char val[],int i)
 	  strcpy(tab[i].valCh,val);
 }
 
+
 void rechercherCh (char entite[], char code[],char type[],char val[])	
 {
   int i;
+
     for (i=0; ((i<1000)&&(tab[i].state==1))&&(strcmp(entite,tab[i].name)!=0);i++); 
         if((i<1000)&&(tab[i].state==0))
         { 
 		    	insererCh(entite,code,type,val,i); 
+
          }
 }
+
 
 
 /***Step 5 L'affichage du contenue de la table des symboles ***/
@@ -155,11 +160,13 @@ void afficher()
 {int i;
  
 printf("\n/***************Table des symboles IDF***************/");
+
 printf("\n/***************Table des symboles IDF******************/\n");
 printf("____________________________________________________________________\n");
 printf("\t| Nom_Entite |  Code_Entite | Type_Entite | Val_Entite\n");
 printf("____________________________________________________________________\n");
   
+
 for(i=0;i<1000;i++)
 {	
 	
@@ -170,10 +177,12 @@ for(i=0;i<1000;i++)
          else{
            printf("\t|%10s |%15s | %12s | %12f\n",tab[i].name,tab[i].code,tab[i].type,tab[i].val);
          }
+
 		
          
       }
 }
+
 printf("\n\n\n/***************Table des Mot cles***************/");
 printf("\n/***************Table des Mot cles******************/\n");
 printf("____________________________________________________________________\n");
@@ -242,6 +251,7 @@ for(i=0;i<40;i++)
 	   tab[pos].val =val;
 	}
 
+
   void insertReal(char entite[], float* val)
 	{
 	   int pos;
@@ -255,6 +265,7 @@ for(i=0;i<40;i++)
 	   int pos;
 	   pos= Recherche_position(entite);
 	   strcpy(tab[pos].valCh , val) ;
+
 	}
 
 	int GetValue(char entite[])
@@ -274,12 +285,32 @@ for(i=0;i<40;i++)
 	
 	int doubleDeclaration(char entite[])
 	{
-	int pos , pos1;
+
+	int pos;
 	pos=  Recherche_position(entite);
-	if(strcmp(tab[pos].type,"")!=0) return -1;
-	   else return 0;
-	  
+	if(strcmp(tab[pos].type,"")==0) return 0;
+	   else return -1;
+	}
+
+  int CompatibleType(char entite1[], char entite[]) 
+  {
+    int pos = Recherche_position(entite);
+    int pos1 = Recherche_position(entite1);
+    if(strcmp(tab[pos].type, tab[pos1].type) == 0){
+      return 1;
+    } 
+    return 0;
   }
+	
+
+  void saveIdf(char **sauvIdf, char *mot) {
+    printf(" i am here");
+    if  (strcmp(sauvIdf[0],"") == 0) strcpy(sauvIdf[0],mot);
+    else strcpy(sauvIdf[1],mot);
+    printf(" i am here");
+    printf("%s %s ",sauvIdf[0], sauvIdf[1]);
+  }
+
 
 
   int rechercheBib(char* bib){

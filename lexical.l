@@ -21,11 +21,16 @@ text 	 ({chiffre}|{lettre})*|({lettre}|{chiffre})*
 
 %%
 
+
+
+
 Programme	{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_pgm;}
+
 INTEGER		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_integer;}
 REAL		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_real;}
 STRING		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_string;}
 CHAR		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_char;}
+
 PROCESS		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_process;}
 LOOP		{ yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_loop;}
 ARRAY		{ yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_array;}
@@ -45,6 +50,7 @@ EG		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = 
 SUP		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_sup;}
 SUPE		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_supe;}
 DIFF		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_diff;}
+
 
 "/"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return division;}
 "+"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return addition;}
@@ -74,6 +80,7 @@ DIFF		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col 
 
 {cstInt} 		{ rechercher (yytext,"Cst entiere ","entier",atoi(yytext), 0);  col = col + strlen(yytext);  yylval.entier= atoi(yytext); ;return cstInt;}
 {cstReal}		{ rechercher (yytext,"Cst real ","real",atof(yytext), 0);  col = col + strlen(yytext); yylval.real= atof(yytext); return cstReal;}
+
 {caracter}		{rechercherCh (yytext,"Cst car ", "caractere" ,yytext); yylval.car= strdup(yytext); col = col + strlen(yytext); return car ;}
 {chaine}		{rechercherCh (yytext,"Cst chaine ", "chaine" ,yytext); yylval.chaine= strdup(yytext); col = col + strlen(yytext); return chaine;}
 {comment}		{ col = col + strlen(yytext); }

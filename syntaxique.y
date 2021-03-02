@@ -2,19 +2,25 @@
 	#include <stdio.h>
 	char sauvType[25];
 	char sauvOP[25];
-	char sauvName[25];
-	char sauvIdf[25];
+
+	char sauvCst[25];
+	char sauvIdf1[25];
+	char sauvIdf[2][10] = {};
+
 	char sauvidftab[25];
 	int nb_ligne = 1;
 	int col = 1;
+	int choice;
 %}
 
 %union 
 { 
    int entier; 
    char* str;
+
    char* chaine;
    char* car;
+
    float real;
 }
 
@@ -45,14 +51,27 @@ DECLARATION : mc_var LIST_DEC mc_const LIST_DEC_CONST
 ;
 
 
-CST : cstInt { sprintf(sauvName, "%d", $1); strcpy(sauvType,"entier");} | cstReal { sprintf(sauvName, "%f", $1); strcpy(sauvType,"real");} ;
+
+CST : cstInt { sprintf(sauvCst, "%d", $1); strcpy(sauvType,"entier");} | cstReal { sprintf(sauvCst, "%f", $1); strcpy(sauvType,"real");} ;
+
 
 
 IDF : idf {   
    			  if(doubleDeclaration($1)==0) 
 			  printf("Erreur semantique: %s variable non declaree a la ligne %d\n",$1,nb_ligne);   
-			  else strcpy(sauvIdf,$1);               							   
-		 	} | idftab { strcpy(sauvidftab,$1); }
+
+			  else
+			   {strcpy(sauvIdf1,$1);
+			   if  (strcmp(sauvIdf[0],"") == 0) strcpy(sauvIdf[0],$1);
+    					else strcpy(sauvIdf[1],$1); }   }           							   
+		 	 | idftab{ 
+			  if(doubleDeclaration($1)==0) 
+			  printf("Erreur semantique: %s variable non declaree a la ligne %d\n",$1,nb_ligne);   
+			  else
+			   {strcmp(sauvIdf1,$1);
+			   if  (strcmp(sauvIdf[0],"") == 0) strcpy(sauvIdf[0],$1);
+    					else strcpy(sauvIdf[1],$1); } }
+
 ;
 
 LIST_DEC_CONST : DEC_CST LIST_DEC_CONST
@@ -107,6 +126,7 @@ LIST_IDF_CST_REAL: idf egality cstReal sep  LIST_IDF_CST_REAL {
 					if(doubleDeclaration($1)==0)   
 								    { 
    									    insererTYPE($1,"real");
+
 										float val = $3 ; 
 									
 										insertReal($1,&val);
@@ -140,7 +160,9 @@ LIST_IDF_CST_INT: idf egality cstInt sep  LIST_IDF_CST_INT {
 	    | idf egality cstInt { 
 		                        if(doubleDeclaration($1)==0)   
 								    { 
-   									    insererTYPE($1,"entier");
+
+   									    insererTYPE($1,"entier");  
+
 										insertValEntiere($1,$3);
 								    }
 							    else 
@@ -192,13 +214,33 @@ INST : INST_AFF
 	 
 ;
  // if(strcmp( GetType(sauvIdf), sauvType) == 0){ 
+
+ // saveIdf(sauvIdf,$1);
 INST_AFF :  IDF aff CST fin {
-							insertValEntiere(sauvIdf,GetValue(sauvName)) ;} 
-	 |  IDF aff idf fin {
-							insertValEntiere(sauvIdf,GetValue($3)) ;} 
+							if(CompatibleType(sauvIdf1,sauvCst) == 1) {
+							insertValEntiere(sauvIdf1,GetValue(sauvCst)) ;
+							strcpy(sauvIdf[0],"");}
+							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+							} 
+	 |  IDF aff idf fin {	
+		 					if(CompatibleType(sauvIdf1,$3) == 1) {
+							insertValEntiere(sauvIdf1,GetValue($3)) ;
+							strcpy(sauvIdf[0],"");}
+							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+							} 
 	 |  IDF aff idftab fin {
-							insertValEntiere(sauvIdf,GetValue($3)) ;} 
-	 |  IDF aff par_o IDF par_f fin 
+		 					if(CompatibleType(sauvIdf1,$3) == 1) {
+							insertValEntiere(sauvIdf1,GetValue($3)) ;
+							strcpy(sauvIdf[0],"");}
+							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+							} 
+	 |  IDF aff par_o IDF par_f fin {
+		 					if(CompatibleType(sauvIdf[0],sauvIdf[1]) == 1) {
+							insertValEntiere(sauvIdf[0],GetValue(sauvIdf[1])) ;
+							strcpy(sauvIdf[0],"");}
+							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+							} 
+
 	 
 	 | IDF aff INST_ARITH 
 ;
@@ -206,8 +248,10 @@ INST_AFF :  IDF aff CST fin {
 
 
 
+
 INST_ARITH : EXPRESSION fin  {if(!rechercheBib("PROCESS")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}}
-			| EXPRESSION_PAR fin  {if(!rechercheBib("PROCESS")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}}
+			| EXPRESSION_PAR fin   {if(!rechercheBib("PROCESS")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}}
+
 			
 			
 ;
@@ -223,25 +267,45 @@ EXPRESSION_PAR : // An expression that can generate parenthesis
 		| par_o EXPRESSION_PAR par_f
 				
 ;
-		
-EXPRESSION :  OPERAND OPERATION OPERAND 
-				 {if(strcmp(sauvOP,"division")==0)
-					if (GetValue(sauvName)==0)
-			      {
-				    printf ("Erreur semantique division par 0 à la ligne %d et a la colonne %d \n",nb_ligne,col); 
-				  }
+		//only integers cases
+EXPRESSION :  OPERAND OPERATION OPERAND {
+				if(strcmp(sauvOP,"/") == 0){
+					if(choice == 0) {
+						if(GetValue(sauvCst) == 0)
+						printf ("Erreur semantique division par 0 à la ligne %d et a la colonne %d \n",nb_ligne,col); 
+					}
+
+					else {
+						if(GetValue(sauvIdf1) == 0)
+						printf ("Erreur semantique division par 0 à la ligne %d et a la colonne %d \n",nb_ligne,col);
+					}
+				}
 			}
+
+
 			| OPERAND OPERATION EXPRESSION_PAR
 			| OPERAND OPERATION EXPRESSION
 			
 ;
 
-OPERAND : CST | IDF | par_o IDF par_f ;
 
-OPERATION : addition {strcpy(sauvOP,$1);}
-	  | division {strcpy(sauvOP,$1);}
-	  | substraction {strcpy(sauvOP,$1);}
-	  | multi {strcpy(sauvOP,$1);}
+OPERAND : CST {choice = 0;}
+	    | IDF {
+			choice = 1;
+			strcpy(sauvIdf[0],"");
+		}
+		| par_o IDF par_f {
+		  choice =1;
+		  strcpy(sauvIdf[0],"");
+		}
+		;
+
+OPERATION : addition {strcpy(sauvOP,"+");}
+	  | division {strcpy(sauvOP,"/");}
+	  | substraction {strcpy(sauvOP,"-");}
+	  | multi {strcpy(sauvOP,"*");}
+
+
 ;
 
 
