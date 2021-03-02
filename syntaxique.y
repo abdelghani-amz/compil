@@ -52,7 +52,7 @@ DECLARATION : mc_var LIST_DEC mc_const LIST_DEC_CONST
 
 
 
-CST : cstInt { sprintf(sauvCst, "%d", $1); strcpy(sauvType,"entier");} | cstReal { sprintf(sauvCst, "%f", $1); strcpy(sauvType,"real");} ;
+CST : cstInt { sprintf(sauvCst, "%d", $1); strcpy(sauvType,"entier");} | cstReal { sprintf(sauvCst, "%g", $1); strcpy(sauvType,"real");} ;
 
 
 
@@ -65,7 +65,6 @@ IDF : idf {
 			   if  (strcmp(sauvIdf[0],"") == 0) strcpy(sauvIdf[0],$1);
     					else strcpy(sauvIdf[1],$1); }   }           							   
 		 	 | idftab{ 
-				  if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
 			  if(doubleDeclaration($1)==0) 
 			  printf("Erreur semantique: %s variable non declaree a la ligne %d\n",$1,nb_ligne);   
 			  else
@@ -186,14 +185,11 @@ LIST_IDF : idf sep LIST_IDF { if(doubleDeclaration($1)==0)   { insererTYPE($1,sa
 							    else 
 								printf("Erreur semantique: Double declaration  de %s a la ligne %d et a la colonne %d\n",$1,nb_ligne,col);
 							  }
-	 	 | idftab sep LIST_IDF {if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
-			  					 if(doubleDeclaration($1)==0)   { insererTYPE($1,sauvType);}
+	 	 | idftab sep LIST_IDF { if(doubleDeclaration($1)==0)   { insererTYPE($1,sauvType);}
 							    else 
 								printf("Erreur semantique: Double declaration  de %s a la ligne %d et a la colonne %d\n",$1,nb_ligne,col);
 							  }
-	 	 | idftab { 
-			  if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
-			  if(doubleDeclaration($1)==0)   { insererTYPE($1,sauvType);}
+	 	 | idftab { if(doubleDeclaration($1)==0)   { insererTYPE($1,sauvType);}
 							    else 
 								printf("Erreur semantique: Double declaration  de %s a la ligne %d et a la colonne %d\n",$1,nb_ligne,col);
 							  }
@@ -222,27 +218,41 @@ INST : INST_AFF
  // saveIdf(sauvIdf,$1);
 INST_AFF :  IDF aff CST fin {
 							if(CompatibleType(sauvIdf1,sauvCst) == 1) {
-							insertValEntiere(sauvIdf1,GetValue(sauvCst)) ;
-							strcpy(sauvIdf[0],"");}
-							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+								
+								if(strcmp(GetType(sauvIdf1),"entier") == 0){
+									insertValEntiere(sauvIdf1,GetValue(sauvCst)) ;
+									strcpy(sauvIdf[0],"");
+									}
+								else {
+									   if(strcmp(GetType(sauvIdf1),"real") == 0){
+										float val = GetValue(sauvCst) ;
+										//printf("this is the valueString %s \n", sauvCst) ;
+										// val = atof(sauvCst;)
+										//printf("this is the value %f \n", val) ;
+										insertReal(sauvIdf1,&val) ;
+										strcpy(sauvIdf[0],"");
+									}
+							} 
+							}
+							else printf ("Erreur semantique Type de variables incompatibles a la ligne %d et a la colonne %d \n",nb_ligne,col);
 							} 
 	 |  IDF aff idf fin {	
 		 					if(CompatibleType(sauvIdf1,$3) == 1) {
 							insertValEntiere(sauvIdf1,GetValue($3)) ;
 							strcpy(sauvIdf[0],"");}
-							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+							else printf ("Erreur semantique Type de variables incompatibles a la ligne %d et a la colonne %d \n",nb_ligne,col);
 							} 
-	 |  IDF aff idftab fin {if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
+	 |  IDF aff idftab fin {
 		 					if(CompatibleType(sauvIdf1,$3) == 1) {
 							insertValEntiere(sauvIdf1,GetValue($3)) ;
 							strcpy(sauvIdf[0],"");}
-							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+							else printf ("Erreur semantique Type de variables incompatibles a la ligne %d et a la colonne %d \n",nb_ligne,col);
 							} 
 	 |  IDF aff par_o IDF par_f fin {
 		 					if(CompatibleType(sauvIdf[0],sauvIdf[1]) == 1) {
 							insertValEntiere(sauvIdf[0],GetValue(sauvIdf[1])) ;
 							strcpy(sauvIdf[0],"");}
-							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+							else printf ("Erreur semantique Type de variables incompatibles a la ligne %d et a la colonne %d \n",nb_ligne,col);
 							} 
 
 	 

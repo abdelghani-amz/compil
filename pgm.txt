@@ -1,7 +1,8 @@
 
 
-##LOOP$
 
+##LOOP$
+## PROCESS$
 Programme       Test
 {
  
@@ -11,14 +12,34 @@ INTEGER :: Value3 = 2 // Value4 = 3 $
 REAL :: Value2 = 3.5 // Value = 4.4 $
 STRING :: X = "JEFF" $
 CHAR :: V = 'C' $
- VAR INTEGER :: T1[33] // Xee // T1 // Xe // A // C // D $
- REAL :: Abc $
+ VAR INTEGER :: T1[33] // Xee // T1 // Xe // A // C // D // T5 // T5 $
+ REAL :: PO $
   
+ PO := 2.4 $
+
+
+
  
- Abc := 6.9 $
+ Xee := 0 $
  Xe := 6 $
  T1 := Xee $
  T1 := (Xe) $
+
+ Xee := 5 $
+ Xe := 6 $
+  
+T1 := Value $
+T1 := T3 $
+T1 := 2.5 $
+
+
+T2 := 0 $
+T5 := 0 $
+T1 := Xee / 0 $ 
+
+T1 := Xee / T5 $
+
+T1 := Xe / TM $
 
 WHILE (A DIFF D )
 {
@@ -26,5 +47,6 @@ A :=2 $
 A :=C+D /(-8)$
 }
 $
+
  
 }
