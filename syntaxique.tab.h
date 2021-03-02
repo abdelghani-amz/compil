@@ -101,12 +101,12 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 13 "syntaxique.y"
+#line 15 "syntaxique.y"
  
    int entier; 
    char* str;
-   char* chaine;
-   char* car;
+   char chaine;
+   char car;
    float real;
 
 
