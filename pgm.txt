@@ -1,33 +1,32 @@
+
+
+
 ##LOOP$
-##PROCESS$
-##LOOP$
-##PROCESS$
+
 Programme       Test
 {
  
 
-CONST REAL :: Value = 2.5 // Value2 = 3.5 $
+CONST
 INTEGER :: Value3 = 2 // Value4 = 3 $
-
- VAR INTEGER :: T1[33] // Xee // T1 // Xe // T2 $
- REAL :: T3 $
+REAL :: Value2 = 3.5 // Value = 4.4 $
+STRING :: X = "JEFF" $
+CHAR :: V = 'C' $
+ VAR INTEGER :: T1[33] // Xee // T1 // Xe // A // C // D $
+ 
   
  
- Xee := 5 $
+ Xee := 0 $
  Xe := 6 $
-  
-T1 := Value $
-T1 := T3 $
-T1 := 2.5 $
+ T1 := Xee $
+ T1 := (Xe) $
 
-
-T2 := 0 $
-T1 := Xee / 0 $ 
-
-T1 := Xee / T2 $
-
-T1 := Xe / TM $
-
+WHILE (A DIFF D )
+{
+A :=2 $
+A :=C+D /(-8)$
+}
+$
 
  
 }

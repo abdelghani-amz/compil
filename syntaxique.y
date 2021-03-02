@@ -2,9 +2,11 @@
 	#include <stdio.h>
 	char sauvType[25];
 	char sauvOP[25];
+
 	char sauvCst[25];
 	char sauvIdf1[25];
 	char sauvIdf[2][10] = {};
+
 	char sauvidftab[25];
 	int nb_ligne = 1;
 	int col = 1;
@@ -15,8 +17,10 @@
 { 
    int entier; 
    char* str;
-   char chaine;
-   char car;
+
+   char* chaine;
+   char* car;
+
    float real;
 }
 
@@ -47,12 +51,15 @@ DECLARATION : mc_var LIST_DEC mc_const LIST_DEC_CONST
 ;
 
 
+
 CST : cstInt { sprintf(sauvCst, "%d", $1); strcpy(sauvType,"entier");} | cstReal { sprintf(sauvCst, "%f", $1); strcpy(sauvType,"real");} ;
+
 
 
 IDF : idf {   
    			  if(doubleDeclaration($1)==0) 
 			  printf("Erreur semantique: %s variable non declaree a la ligne %d\n",$1,nb_ligne);   
+
 			  else
 			   {strcpy(sauvIdf1,$1);
 			   if  (strcmp(sauvIdf[0],"") == 0) strcpy(sauvIdf[0],$1);
@@ -64,6 +71,7 @@ IDF : idf {
 			   {strcmp(sauvIdf1,$1);
 			   if  (strcmp(sauvIdf[0],"") == 0) strcpy(sauvIdf[0],$1);
     					else strcpy(sauvIdf[1],$1); } }
+
 ;
 
 LIST_DEC_CONST : DEC_CST LIST_DEC_CONST
@@ -76,20 +84,52 @@ DEC_CST : mc_char dpts LIST_IDF_CST_CHAR fin
 		| mc_integer dpts LIST_IDF_CST_INT fin 
 ;
 
-LIST_IDF_CST_CHAR: idf egality car sep  LIST_IDF_CST_STR
-	    | idf egality car 
+LIST_IDF_CST_CHAR: idf egality car sep  LIST_IDF_CST_CHAR {
+								if(doubleDeclaration($1)==0)   
+								    { 
+   									    insererTYPE($1,"caractere");
+										insertCh($1,$3);
+								    }
+							    else 
+								printf("Erreur semantique: double declaration  de %s a la ligne %d et la colonne %d \n",$1,nb_ligne, col);}
+
+	    | idf egality car {
+								if(doubleDeclaration($1)==0)   
+								    { 
+   									    insererTYPE($1,"caractere");
+										insertCh($1,$3);
+								    }
+							    else 
+								printf("Erreur semantique: double declaration  de %s a la ligne %d et la colonne %d \n",$1,nb_ligne, col);}
+		
 ;
 
-LIST_IDF_CST_STR: idf egality chaine sep  LIST_IDF_CST_STR
-	    | idf egality chaine
+LIST_IDF_CST_STR: idf egality chaine sep  LIST_IDF_CST_STR {
+								if(doubleDeclaration($1)==0)   
+								    { 
+   									    insererTYPE($1,"chaine");
+										insertCh($1,$3);
+								    }
+							    else 
+								printf("Erreur semantique: double declaration  de %s a la ligne %d et la colonne %d \n",$1,nb_ligne, col);}
+	    | idf egality chaine {
+			if(doubleDeclaration($1)==0)   
+								    { 
+   									    insererTYPE($1,"chaine");
+										insertCh($1,$3);
+								    }
+							    else 
+								printf("Erreur semantique: double declaration  de %s a la ligne %d et la colonne %d \n",$1,nb_ligne, col);}
 ;
 
 LIST_IDF_CST_REAL: idf egality cstReal sep  LIST_IDF_CST_REAL {
 					if(doubleDeclaration($1)==0)   
 								    { 
    									    insererTYPE($1,"real");
-										printf(" this is a float in syntaxic %f \n",$1 ,$3);
-										insertReal($1,$3);
+
+										float val = $3 ; 
+									
+										insertReal($1,&val);
 								    }
 							    else 
 								printf("Erreur semantique: double declaration  de %s a la ligne %d et la colonne %d \n",$1,nb_ligne, col);
@@ -97,9 +137,11 @@ LIST_IDF_CST_REAL: idf egality cstReal sep  LIST_IDF_CST_REAL {
 	    | idf egality cstReal {
 		if(doubleDeclaration($1)==0)
 								     { 
-										printf("this is a float in syntaxic %f \n", $3);
    									    insererTYPE($1,"real");
-										insertReal($1,$3);
+										   float val = $3 ; 
+										
+
+										insertReal($1,&val);
 								     }
 							    else 
 								printf("Erreur semantique: double declaration  de %s a la ligne %d et la colonne %d \n",$1,nb_ligne, col);
@@ -118,7 +160,9 @@ LIST_IDF_CST_INT: idf egality cstInt sep  LIST_IDF_CST_INT {
 	    | idf egality cstInt { 
 		                        if(doubleDeclaration($1)==0)   
 								    { 
+
    									    insererTYPE($1,"entier");  
+
 										insertValEntiere($1,$3);
 								    }
 							    else 
@@ -166,10 +210,11 @@ INST : INST_AFF
      | INPUT
      | OUTPUT
 	 | IF_STATEMENT
-	 | LOOP
+	 | LOOP  {if(!rechercheBib("LOOP")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}} 
 	 
 ;
  // if(strcmp( GetType(sauvIdf), sauvType) == 0){ 
+
  // saveIdf(sauvIdf,$1);
 INST_AFF :  IDF aff CST fin {
 							if(CompatibleType(sauvIdf1,sauvCst) == 1) {
@@ -195,6 +240,7 @@ INST_AFF :  IDF aff CST fin {
 							strcpy(sauvIdf[0],"");}
 							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
 							} 
+
 	 
 	 | IDF aff INST_ARITH 
 ;
@@ -202,8 +248,10 @@ INST_AFF :  IDF aff CST fin {
 
 
 
-INST_ARITH : EXPRESSION fin
-			| EXPRESSION_PAR fin
+
+INST_ARITH : EXPRESSION fin  {if(!rechercheBib("PROCESS")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}}
+			| EXPRESSION_PAR fin   {if(!rechercheBib("PROCESS")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}}
+
 			
 			
 ;
@@ -240,6 +288,7 @@ EXPRESSION :  OPERAND OPERATION OPERAND {
 			
 ;
 
+
 OPERAND : CST {choice = 0;}
 	    | IDF {
 			choice = 1;
@@ -255,6 +304,8 @@ OPERATION : addition {strcpy(sauvOP,"+");}
 	  | division {strcpy(sauvOP,"/");}
 	  | substraction {strcpy(sauvOP,"-");}
 	  | multi {strcpy(sauvOP,"*");}
+
+
 ;
 
 
@@ -275,8 +326,8 @@ SIGNS : fin
       | s_char
 ;
 
-IF_STATEMENT :exe INSTS mc_if CONDITION end
-		| exe INSTS mc_if CONDITION mc_else exe INSTS end
+IF_STATEMENT :exe INSTS mc_if CONDITION end fin
+		| exe INSTS mc_if CONDITION mc_else exe INSTS end  fin
 ;
 
 CONDITION :  par_o INST_ARITH LOGIC INST_ARITH par_f
@@ -293,7 +344,7 @@ LOGIC : mc_inf
 		| mc_eg
 ;
 
-LOOP : mc_while CONDITION acc_o INSTS acc_f
+LOOP : mc_while CONDITION acc_o INSTS acc_f fin
 ;
 
 
