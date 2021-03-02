@@ -1,79 +1,30 @@
 
-/* this is a  comment */
+
 ##LOOP$
-/* this is a  comment */
-##PROCESS$
-/* this is a  comment */
 
-Programme Xe 
+Programme       Test
 {
-/* this is a  comment */
+ 
 
-CONST REAL :: Value = 2.5 // Value2 = 3.5 $
+CONST
+INTEGER :: Value3 = 2 // Value4 = 3 $
+REAL :: Value2 = 3.5 // Value = 4.4 $
+STRING :: X = "JEFF" $
+CHAR :: V = 'C' $
+ VAR INTEGER :: T1[33] // Xee // T1 // Xe // A // C // D $
+ 
+  
+ 
+ Xee := 0 $
+ Xe := 6 $
+ T1 := Xee $
+ T1 := (Xe) $
 
-/* this is a  comment */
-
-STRING :: Jeff = "jeff" $
-CHAR :: Char = 'a' $
-
-
-VAR REAL :: Value22  // Value222  $
-REAL :: Table[5]$
-
-INTEGER :: Table[5] // Table1[5] // Table2[5]$
-
-/* this is a  comment */
-Value2 := Table[5]$
-Value2 := Table[5] - 4$
-Value := Value2 - 3 + V2 / 1 - Table[5] $
-Test := (Test) $
-Test1 := (-3) $
-Value := (Value2 + 3) $
-Value := (3) + Value $
-Value := ( -3 ) + Value $
-/* this is a  comment */
-Value := (Value2) + (3) $
-Value := (Value2) + (-3)  $
-Value :=   (Value2) + (-3) / ( -5) + ( ValueA )   $
-
-READ ('' & '' | @ Vdf ) $ 
-WRITE ( "chaine"  | Idf) $ 
-WRITE ( "chaine"  | Idf |IDF2) $ 
-Value :=   ( ( (Value2) + -3) * ( -5 +  ValueA ) ) $ 
-/* test */
-
-
-
-
-	EXECUT READ ('' & '' | @ Vdf ) $ 
-	/* this is a  comment */
-IF (1 DIFF 2 )
-ELSE
-	EXECUT WRITE ( "chaine"  | Idf) $ 
-END_IF
-
-
-/* this is a  comment */
-	EXECUT WHILE (1 EG 2 )
-	{	
-		READ ('' & '' | @ Vdf ) $ 
-		WRITE ( "chaine"  | Idf) $ 
-		WRITE ( "chaine"  | Idf |IDF2) $ 
-		Value :=   ( ( (Value2) + -3) * ( -5 +  ValueA ) ) $ 
-	}
-IF (1 SUP 2 )
-ELSE
-	EXECUT WRITE ( "chaine"  | Idf) $ 
-END_IF
-
-WHILE (1 INF 2 )
+WHILE (A DIFF D )
 {
-	READ ('' & '' | @ Vdf ) $ 
-	WRITE ( "chaine"  | Idf) $ 
-	WRITE ( "chaine"  | Idf |IDF2) $ 
-	Value :=   ( ( (Value2) + -3) * ( -5 +  ValueA ) ) $ 
+A :=2 $
+A :=C+D /(-8)$
 }
-
-
-
+$
+ 
 }
