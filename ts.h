@@ -272,6 +272,14 @@ for(i=0;i<40;i++)
   	void insertValEntiere(char entite[], int val)
 	{
 	   int pos;
+     
+	   pos= Recherche_position(entite);
+	   tab[pos].val =val;
+	}
+
+  void insertReal(char entite[], float val)
+	{
+	   int pos;
 	   pos= Recherche_position(entite);
 	   tab[pos].val =val;
 	}
@@ -280,8 +288,14 @@ for(i=0;i<40;i++)
 		{
 		int pos;
 		pos= Recherche_position(entite);
-		printf("My Value is %d : ",tab[pos].val);
 		return tab[pos].val;
+	
+	}  
+  char *GetType(char entite[])
+		{
+		int pos;
+		pos= Recherche_position(entite);
+		return tab[pos].type;
 	
 	}  
 	

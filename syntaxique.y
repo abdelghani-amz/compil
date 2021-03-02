@@ -2,6 +2,9 @@
 	#include <stdio.h>
 	char sauvType[25];
 	char sauvOP[25];
+	char sauvName[25];
+	char sauvIdf[25];
+	char sauvidftab[25];
 	int nb_ligne = 1;
 	int col = 1;
 %}
@@ -42,11 +45,14 @@ DECLARATION : mc_var LIST_DEC mc_const LIST_DEC_CONST
 ;
 
 
-CST : cstInt | cstReal ;
-IDF : idf {
+CST : cstInt { sprintf(sauvName, "%d", $1); strcpy(sauvType,"entier");} | cstReal { sprintf(sauvName, "%f", $1); strcpy(sauvType,"real");} ;
+
+
+IDF : idf {   
    			  if(doubleDeclaration($1)==0) 
-			  printf("Erreur semantique: %s variable non declaree a la ligne %d\n",$1,nb_ligne);                  							   
-		 	} | idftabs
+			  printf("Erreur semantique: %s variable non declaree a la ligne %d\n",$1,nb_ligne);   
+			  else strcpy(sauvIdf,$1);               							   
+		 	} | idftab { strcpy(sauvidftab,$1); }
 ;
 
 LIST_DEC_CONST : DEC_CST LIST_DEC_CONST
@@ -67,12 +73,44 @@ LIST_IDF_CST_STR: idf egality chaine sep  LIST_IDF_CST_STR
 	    | idf egality chaine
 ;
 
-LIST_IDF_CST_REAL: idf egality cstReal sep  LIST_IDF_CST_REAL
-	    | idf egality cstReal
+LIST_IDF_CST_REAL: idf egality cstReal sep  LIST_IDF_CST_REAL {
+					if(doubleDeclaration($1)==0)   
+								    { 
+   									    insererTYPE($1,"real");
+										insertReal($1,$3);
+								    }
+							    else 
+								printf("Erreur semantique: double declaration  de %s a la ligne %d et la colonne %d \n",$1,nb_ligne, col);
+							  }
+	    | idf egality cstReal {
+		if(doubleDeclaration($1)==0)
+								     { 
+   									    insererTYPE($1,"real");
+										insertReal($1,$3);
+								     }
+							    else 
+								printf("Erreur semantique: double declaration  de %s a la ligne %d et la colonne %d \n",$1,nb_ligne, col);
+							  }
 ;
 
-LIST_IDF_CST_INT: idf egality cstInt sep  LIST_IDF_CST_INT 
-	    | idf egality cstInt
+LIST_IDF_CST_INT: idf egality cstInt sep  LIST_IDF_CST_INT { 
+		                        if(doubleDeclaration($1)==0)   
+								    { 
+   									    insererTYPE($1,"entier");
+										insertValEntiere($1,$3);
+								    }
+							    else 
+								printf("Erreur semantique: double declaration  de %s a la ligne %d et la colonne %d \n",$1,nb_ligne, col);
+							  }
+	    | idf egality cstInt { 
+		                        if(doubleDeclaration($1)==0)   
+								    { 
+   									    insererTYPE($1,"entier");
+										insertValEntiere($1,$3);
+								    }
+							    else 
+								printf("Erreur semantique: double declaration  de %s a la ligne %d et la colonne %d \n",$1,nb_ligne, col);
+							  }
 
 ;
 
@@ -100,10 +138,10 @@ LIST_IDF : idf sep LIST_IDF { if(doubleDeclaration($1)==0)   { insererTYPE($1,sa
 							  }
 ;
 
-TYPE :	 mc_char  {strcpy(sauvType,$1);} 
-	|mc_string {strcpy(sauvType,$1);} 
-	|mc_real {strcpy(sauvType,$1);} 
-	|mc_integer {strcpy(sauvType,$1); } 
+TYPE :	 mc_char  {strcpy(sauvType,"car");} 
+	|mc_string {strcpy(sauvType,"chaine");} 
+	|mc_real {strcpy(sauvType,"real");} 
+	|mc_integer {strcpy(sauvType,"entier"); } 
 
 
 INSTS : INST INSTS
@@ -118,12 +156,19 @@ INST : INST_AFF
 	 | LOOP
 	 
 ;
-
-INST_AFF :  IDF aff CST fin 
-	 |  IDF aff IDF fin 
+ // if(strcmp( GetType(sauvIdf), sauvType) == 0){ 
+INST_AFF :  IDF aff CST fin {
+							insertValEntiere(sauvIdf,GetValue(sauvName)) ;} 
+	 |  IDF aff idf fin {
+							insertValEntiere(sauvIdf,GetValue($3)) ;} 
+	 |  IDF aff idftab fin {
+							insertValEntiere(sauvIdf,GetValue($3)) ;} 
 	 |  IDF aff par_o IDF par_f fin 
+	 
 	 | IDF aff INST_ARITH 
 ;
+
+
 
 
 INST_ARITH : EXPRESSION fin
@@ -144,10 +189,11 @@ EXPRESSION_PAR : // An expression that can generate parenthesis
 				
 ;
 		
-EXPRESSION :  OPERAND OPERATION OPERAND {if(strcmp(sauvOP,"division")==0)
-					if (GetValue($3)==0)
+EXPRESSION :  OPERAND OPERATION OPERAND 
+				 {if(strcmp(sauvOP,"division")==0)
+					if (GetValue(sauvName)==0)
 			      {
-				    printf ("Erreur semantique division par 0 à la ligne %d et a la colonne %d \n",nb_ligne,Col); 
+				    printf ("Erreur semantique division par 0 à la ligne %d et a la colonne %d \n",nb_ligne,col); 
 				  }
 			}
 			| OPERAND OPERATION EXPRESSION_PAR
