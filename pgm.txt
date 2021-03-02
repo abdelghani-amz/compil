@@ -1,6 +1,5 @@
 
 
-
 ##LOOP$
 
 Programme       Test
@@ -13,10 +12,10 @@ REAL :: Value2 = 3.5 // Value = 4.4 $
 STRING :: X = "JEFF" $
 CHAR :: V = 'C' $
  VAR INTEGER :: T1[33] // Xee // T1 // Xe // A // C // D $
- 
+ REAL :: Abc $
   
  
- Xee := 0 $
+ Abc := 6.9 $
  Xe := 6 $
  T1 := Xee $
  T1 := (Xe) $
@@ -27,6 +26,5 @@ A :=2 $
 A :=C+D /(-8)$
 }
 $
-
  
 }
