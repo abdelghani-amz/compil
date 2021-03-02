@@ -280,8 +280,9 @@ for(i=0;i<40;i++)
   void insertReal(char entite[], float val)
 	{
 	   int pos;
+     printf("this is the float in ts %d \n" , val);
 	   pos= Recherche_position(entite);
-	   tab[pos].val =val;
+	   tab[pos].val = val;
 	}
 
 	int GetValue(char entite[])
@@ -308,4 +309,22 @@ for(i=0;i<40;i++)
 	  
 	
 	}
+
+  int CompatibleType(char entite1[], char entite[]) 
+  {
+    int pos = Recherche_position(entite);
+    int pos1 = Recherche_position(entite1);
+    if(strcmp(tab[pos].type, tab[pos1].type) == 0){
+      return 1;
+    } 
+    return 0;
+  }
 	
+
+  void saveIdf(char **sauvIdf, char *mot) {
+    printf(" i am here");
+    if  (strcmp(sauvIdf[0],"") == 0) strcpy(sauvIdf[0],mot);
+    else strcpy(sauvIdf[1],mot);
+    printf(" i am here");
+    printf("%s %s ",sauvIdf[0], sauvIdf[1]);
+  }
