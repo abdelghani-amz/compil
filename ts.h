@@ -1,3 +1,4 @@
+
 /****************CREATION DE LA TABLE DES SYMBOLES ******************/
 /***Step 1: Definition des structures de données ***/
 #include <stdio.h>
