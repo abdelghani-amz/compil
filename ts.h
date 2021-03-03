@@ -256,7 +256,6 @@ for(i=0;i<40;i++)
   void insertReal(char entite[], float* val)
 	{
 	   int pos;
-     printf("in ts : %f \n", *val) ;
 	   pos= Recherche_position(entite);
 	   tab[pos].val = *val;
 	}
