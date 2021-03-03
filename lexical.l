@@ -21,30 +21,36 @@ text 	 ({chiffre}|{lettre})*|({lettre}|{chiffre})*
 
 %%
 
-Programme	{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_pgm;}
+
+
+
+Programme	{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_pgm;}
+
 INTEGER		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_integer;}
 REAL		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_real;}
 STRING		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_string;}
 CHAR		{  yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_char;}
-PROCESS		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_process;}
-LOOP		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_loop;}
-ARRAY		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_array;}
-VAR		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_var;}
-CONST		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_const;}
-READ		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return read;}
-WRITE		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return write;}
-EXECUT		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return exe;}
-IF 		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_if;}
-WHILE		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_while;}
-END_IF		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return end;}
-ELSE		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_else;}
 
+PROCESS		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_process;}
+LOOP		{ yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_loop;}
+ARRAY		{ yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_array;}
+VAR			{ yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_var;}
+CONST		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_const;}
+READ		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return read;}
+WRITE		{ yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return write;}
+EXECUT		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return exe;}
+IF 			{ yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_if;}
+WHILE		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_while;}
+END_IF		{ yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return end;}
+ELSE		{ yylval.str=strdup(yytext); rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_else;}
 
+INF			{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_inf;}
+INFE		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_infe;}
+EG		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_eg;}
+SUP		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_sup;}
+SUPE		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_supe;}
+DIFF		{  yylval.str=strdup(yytext);rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_diff;}
 
-EG		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_eg;}
-SUP		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_sup;}
-SUPE		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_supe;}
-DIFF		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); return mc_diff;}
 
 "/"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return division;}
 "+"		{rechercher (yytext,"Separateur",0,0, 2);  col = col + strlen(yytext); return addition;}
@@ -74,8 +80,9 @@ DIFF		{  rechercher (yytext,"Mot cle "," ",0, 1); col = col + strlen(yytext); re
 
 {cstInt} 		{ rechercher (yytext,"Cst entiere ","entier",atoi(yytext), 0);  col = col + strlen(yytext);  yylval.entier= atoi(yytext); ;return cstInt;}
 {cstReal}		{ rechercher (yytext,"Cst real ","real",atof(yytext), 0);  col = col + strlen(yytext); yylval.real= atof(yytext); return cstReal;}
-{caracter}		{ col = col + strlen(yytext); return car ;}
-{chaine}		{ col = col + strlen(yytext); return chaine;}
+
+{caracter}		{rechercherCh (yytext,"Cst car ", "caractere" ,yytext); yylval.car= strdup(yytext); col = col + strlen(yytext); return car ;}
+{chaine}		{rechercherCh (yytext,"Cst chaine ", "chaine" ,yytext); yylval.chaine= strdup(yytext); col = col + strlen(yytext); return chaine;}
 {comment}		{ col = col + strlen(yytext); }
 {text}			{ col = col + strlen(yytext); return text ;}
 
