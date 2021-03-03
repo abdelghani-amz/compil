@@ -73,15 +73,19 @@
 	#include <stdio.h>
 	char sauvType[25];
 	char sauvOP[25];
-	char sauvName[25];
-	char sauvIdf[25];
+
+	char sauvCst[25];
+	char sauvIdf1[25];
+	char sauvIdf[2][10] = {};
+
 	char sauvidftab[25];
 	int nb_ligne = 1;
 	int col = 1;
+	int choice;
 
 
 /* Line 189 of yacc.c  */
-#line 85 "syntaxique.tab.c"
+#line 89 "syntaxique.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -170,18 +174,20 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 13 "syntaxique.y"
+#line 17 "syntaxique.y"
  
    int entier; 
    char* str;
+
    char* chaine;
    char* car;
+
    float real;
 
 
 
 /* Line 214 of yacc.c  */
-#line 185 "syntaxique.tab.c"
+#line 191 "syntaxique.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -193,7 +199,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 197 "syntaxique.tab.c"
+#line 203 "syntaxique.tab.c"
 
 #ifdef short
 # undef short
@@ -523,16 +529,16 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    24,    24,    26,    27,    34,    36,    37,    38,    41,
-      42,    43,    44,    48,    48,    51,    55,    58,    59,    62,
-      63,    64,    65,    68,    77,    88,    96,   106,   117,   131,
-     140,   152,   153,   156,   158,   162,   166,   170,   176,   177,
-     178,   179,   182,   183,   186,   187,   188,   189,   190,   191,
-     195,   197,   199,   201,   203,   209,   210,   215,   216,   217,
-     218,   219,   220,   221,   222,   223,   227,   234,   235,   239,
-     239,   239,   241,   242,   243,   244,   248,   251,   255,   256,
-     259,   260,   261,   262,   265,   266,   269,   270,   271,   272,
-     275,   276,   277,   278,   279,   280,   283
+       0,    30,    30,    32,    33,    40,    42,    43,    44,    47,
+      48,    49,    50,    55,    55,    59,    67,    78,    79,    82,
+      83,    84,    85,    88,    97,   108,   116,   126,   138,   152,
+     161,   175,   176,   179,   181,   185,   189,   194,   202,   203,
+     204,   205,   208,   209,   212,   213,   214,   215,   216,   217,
+     223,   229,   235,   241,   249,   256,   257,   263,   264,   265,
+     266,   267,   268,   269,   270,   271,   275,   290,   291,   296,
+     297,   301,   307,   308,   309,   310,   316,   319,   323,   324,
+     327,   328,   329,   330,   333,   334,   337,   338,   339,   340,
+     343,   344,   345,   346,   347,   348,   351
 };
 #endif
 
@@ -1569,46 +1575,56 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 24 "syntaxique.y"
+#line 30 "syntaxique.y"
     {printf("Programme syntaxiquement correct"); YYACCEPT;;}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 48 "syntaxique.y"
-    { sprintf(sauvName, "%d", (yyvsp[(1) - (1)].entier)); strcpy(sauvType,"entier");;}
+#line 55 "syntaxique.y"
+    { sprintf(sauvCst, "%d", (yyvsp[(1) - (1)].entier)); strcpy(sauvType,"entier");;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 48 "syntaxique.y"
-    { sprintf(sauvName, "%f", (yyvsp[(1) - (1)].real)); strcpy(sauvType,"real");;}
+#line 55 "syntaxique.y"
+    { sprintf(sauvCst, "%f", (yyvsp[(1) - (1)].real)); strcpy(sauvType,"real");;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 51 "syntaxique.y"
+#line 59 "syntaxique.y"
     {   
    			  if(doubleDeclaration((yyvsp[(1) - (1)].str))==0) 
 			  printf("Erreur semantique: %s variable non declaree a la ligne %d\n",(yyvsp[(1) - (1)].str),nb_ligne);   
-			  else strcpy(sauvIdf,(yyvsp[(1) - (1)].str));               							   
-		 	;}
+
+			  else
+			   {strcpy(sauvIdf1,(yyvsp[(1) - (1)].str));
+			   if  (strcmp(sauvIdf[0],"") == 0) strcpy(sauvIdf[0],(yyvsp[(1) - (1)].str));
+    					else strcpy(sauvIdf[1],(yyvsp[(1) - (1)].str)); }   ;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 55 "syntaxique.y"
-    { strcpy(sauvidftab,(yyvsp[(1) - (1)].str)); ;}
+#line 67 "syntaxique.y"
+    { 
+				  if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
+			  if(doubleDeclaration((yyvsp[(1) - (1)].str))==0) 
+			  printf("Erreur semantique: %s variable non declaree a la ligne %d\n",(yyvsp[(1) - (1)].str),nb_ligne);   
+			  else
+			   {strcmp(sauvIdf1,(yyvsp[(1) - (1)].str));
+			   if  (strcmp(sauvIdf[0],"") == 0) strcpy(sauvIdf[0],(yyvsp[(1) - (1)].str));
+    					else strcpy(sauvIdf[1],(yyvsp[(1) - (1)].str)); } ;}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 68 "syntaxique.y"
+#line 88 "syntaxique.y"
     {
 								if(doubleDeclaration((yyvsp[(1) - (5)].str))==0)   
 								    { 
@@ -1622,7 +1638,7 @@ yyreduce:
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 77 "syntaxique.y"
+#line 97 "syntaxique.y"
     {
 								if(doubleDeclaration((yyvsp[(1) - (3)].str))==0)   
 								    { 
@@ -1636,7 +1652,7 @@ yyreduce:
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 88 "syntaxique.y"
+#line 108 "syntaxique.y"
     {
 								if(doubleDeclaration((yyvsp[(1) - (5)].str))==0)   
 								    { 
@@ -1650,7 +1666,7 @@ yyreduce:
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 96 "syntaxique.y"
+#line 116 "syntaxique.y"
     {
 			if(doubleDeclaration((yyvsp[(1) - (3)].str))==0)   
 								    { 
@@ -1664,13 +1680,14 @@ yyreduce:
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 106 "syntaxique.y"
+#line 126 "syntaxique.y"
     {
 					if(doubleDeclaration((yyvsp[(1) - (5)].str))==0)   
 								    { 
    									    insererTYPE((yyvsp[(1) - (5)].str),"real");
+
 										float val = (yyvsp[(3) - (5)].real) ; 
-										printf("in main 1 : %f   \n" , val);
+									
 										insertReal((yyvsp[(1) - (5)].str),&val);
 								    }
 							    else 
@@ -1681,13 +1698,13 @@ yyreduce:
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 117 "syntaxique.y"
+#line 138 "syntaxique.y"
     {
 		if(doubleDeclaration((yyvsp[(1) - (3)].str))==0)
 								     { 
    									    insererTYPE((yyvsp[(1) - (3)].str),"real");
 										   float val = (yyvsp[(3) - (3)].real) ; 
-										printf("in main 1 : %f   \n" , val);
+										
 
 										insertReal((yyvsp[(1) - (3)].str),&val);
 								     }
@@ -1699,7 +1716,7 @@ yyreduce:
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 131 "syntaxique.y"
+#line 152 "syntaxique.y"
     { 
 		                        if(doubleDeclaration((yyvsp[(1) - (5)].str))==0)   
 								    { 
@@ -1714,11 +1731,13 @@ yyreduce:
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 140 "syntaxique.y"
+#line 161 "syntaxique.y"
     { 
 		                        if(doubleDeclaration((yyvsp[(1) - (3)].str))==0)   
 								    { 
-   									    insererTYPE((yyvsp[(1) - (3)].str),"entier");
+
+   									    insererTYPE((yyvsp[(1) - (3)].str),"entier");  
+
 										insertValEntiere((yyvsp[(1) - (3)].str),(yyvsp[(3) - (3)].entier));
 								    }
 							    else 
@@ -1729,7 +1748,7 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 158 "syntaxique.y"
+#line 181 "syntaxique.y"
     { if(doubleDeclaration((yyvsp[(1) - (3)].str))==0)   { insererTYPE((yyvsp[(1) - (3)].str),sauvType);}
 							    else 
 								printf("Erreur semantique: Double declaration  de %s a la ligne %d et a la colonne %d\n",(yyvsp[(1) - (3)].str),nb_ligne,col);
@@ -1739,7 +1758,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 162 "syntaxique.y"
+#line 185 "syntaxique.y"
     { if(doubleDeclaration((yyvsp[(1) - (1)].str))==0)   { insererTYPE((yyvsp[(1) - (1)].str),sauvType);}
 							    else 
 								printf("Erreur semantique: Double declaration  de %s a la ligne %d et a la colonne %d\n",(yyvsp[(1) - (1)].str),nb_ligne,col);
@@ -1749,8 +1768,9 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 166 "syntaxique.y"
-    { if(doubleDeclaration((yyvsp[(1) - (3)].str))==0)   { insererTYPE((yyvsp[(1) - (3)].str),sauvType);}
+#line 189 "syntaxique.y"
+    {if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
+			  					 if(doubleDeclaration((yyvsp[(1) - (3)].str))==0)   { insererTYPE((yyvsp[(1) - (3)].str),sauvType);}
 							    else 
 								printf("Erreur semantique: Double declaration  de %s a la ligne %d et a la colonne %d\n",(yyvsp[(1) - (3)].str),nb_ligne,col);
 							  ;}
@@ -1759,8 +1779,10 @@ yyreduce:
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 170 "syntaxique.y"
-    { if(doubleDeclaration((yyvsp[(1) - (1)].str))==0)   { insererTYPE((yyvsp[(1) - (1)].str),sauvType);}
+#line 194 "syntaxique.y"
+    { 
+			  if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
+			  if(doubleDeclaration((yyvsp[(1) - (1)].str))==0)   { insererTYPE((yyvsp[(1) - (1)].str),sauvType);}
 							    else 
 								printf("Erreur semantique: Double declaration  de %s a la ligne %d et a la colonne %d\n",(yyvsp[(1) - (1)].str),nb_ligne,col);
 							  ;}
@@ -1769,120 +1791,178 @@ yyreduce:
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 176 "syntaxique.y"
+#line 202 "syntaxique.y"
     {strcpy(sauvType,"car");;}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 177 "syntaxique.y"
+#line 203 "syntaxique.y"
     {strcpy(sauvType,"chaine");;}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 178 "syntaxique.y"
+#line 204 "syntaxique.y"
     {strcpy(sauvType,"real");;}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 179 "syntaxique.y"
+#line 205 "syntaxique.y"
     {strcpy(sauvType,"entier"); ;}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 191 "syntaxique.y"
+#line 217 "syntaxique.y"
     {if(!rechercheBib("LOOP")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;};}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 195 "syntaxique.y"
+#line 223 "syntaxique.y"
     {
-							insertValEntiere(sauvIdf,GetValue(sauvName)) ;;}
+							if(CompatibleType(sauvIdf1,sauvCst) == 1) {
+							insertValEntiere(sauvIdf1,GetValue(sauvCst)) ;
+							strcpy(sauvIdf[0],"");}
+							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+							;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 197 "syntaxique.y"
-    {
-							insertValEntiere(sauvIdf,GetValue((yyvsp[(3) - (4)].str))) ;;}
+#line 229 "syntaxique.y"
+    {	
+		 					if(CompatibleType(sauvIdf1,(yyvsp[(3) - (4)].str)) == 1) {
+							insertValEntiere(sauvIdf1,GetValue((yyvsp[(3) - (4)].str))) ;
+							strcpy(sauvIdf[0],"");}
+							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+							;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 199 "syntaxique.y"
+#line 235 "syntaxique.y"
+    {if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
+		 					if(CompatibleType(sauvIdf1,(yyvsp[(3) - (4)].str)) == 1) {
+							insertValEntiere(sauvIdf1,GetValue((yyvsp[(3) - (4)].str))) ;
+							strcpy(sauvIdf[0],"");}
+							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+							;}
+    break;
+
+  case 53:
+
+/* Line 1455 of yacc.c  */
+#line 241 "syntaxique.y"
     {
-							insertValEntiere(sauvIdf,GetValue((yyvsp[(3) - (4)].str))) ;;}
+		 					if(CompatibleType(sauvIdf[0],sauvIdf[1]) == 1) {
+							insertValEntiere(sauvIdf[0],GetValue(sauvIdf[1])) ;
+							strcpy(sauvIdf[0],"");}
+							else printf ("Erreur semantique Type de variables incompatibles à la ligne %d et a la colonne %d \n",nb_ligne,col);
+							;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 209 "syntaxique.y"
+#line 256 "syntaxique.y"
     {if(!rechercheBib("PROCESS")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;};}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 210 "syntaxique.y"
+#line 257 "syntaxique.y"
     {if(!rechercheBib("PROCESS")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;};}
     break;
 
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 228 "syntaxique.y"
-    {if(strcmp(sauvOP,"division")==0)
-					if (GetValue(sauvName)==0)
-			      {
-				    printf ("Erreur semantique division par 0 à la ligne %d et a la colonne %d \n",nb_ligne,col); 
-				  }
+#line 275 "syntaxique.y"
+    {
+				if(strcmp(sauvOP,"/") == 0){
+					if(choice == 0) {
+						if(GetValue(sauvCst) == 0)
+						printf ("Erreur semantique division par 0 à la ligne %d et a la colonne %d \n",nb_ligne,col); 
+					}
+
+					else {
+						if(GetValue(sauvIdf1) == 0)
+						printf ("Erreur semantique division par 0 à la ligne %d et a la colonne %d \n",nb_ligne,col);
+					}
+				}
 			;}
+    break;
+
+  case 69:
+
+/* Line 1455 of yacc.c  */
+#line 296 "syntaxique.y"
+    {choice = 0;;}
+    break;
+
+  case 70:
+
+/* Line 1455 of yacc.c  */
+#line 297 "syntaxique.y"
+    {
+			choice = 1;
+			strcpy(sauvIdf[0],"");
+		;}
+    break;
+
+  case 71:
+
+/* Line 1455 of yacc.c  */
+#line 301 "syntaxique.y"
+    {
+		  choice =1;
+		  strcpy(sauvIdf[0],"");
+		;}
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 241 "syntaxique.y"
-    {strcpy(sauvOP,(yyvsp[(1) - (1)].str));;}
+#line 307 "syntaxique.y"
+    {strcpy(sauvOP,"+");;}
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 242 "syntaxique.y"
-    {strcpy(sauvOP,(yyvsp[(1) - (1)].str));;}
+#line 308 "syntaxique.y"
+    {strcpy(sauvOP,"/");;}
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 243 "syntaxique.y"
-    {strcpy(sauvOP,(yyvsp[(1) - (1)].str));;}
+#line 309 "syntaxique.y"
+    {strcpy(sauvOP,"-");;}
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 244 "syntaxique.y"
-    {strcpy(sauvOP,(yyvsp[(1) - (1)].str));;}
+#line 310 "syntaxique.y"
+    {strcpy(sauvOP,"*");;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1886 "syntaxique.tab.c"
+#line 1966 "syntaxique.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2094,7 +2174,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 289 "syntaxique.y"
+#line 357 "syntaxique.y"
 
 main()
 {

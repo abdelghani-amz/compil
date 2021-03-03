@@ -65,6 +65,7 @@ IDF : idf {
 			   if  (strcmp(sauvIdf[0],"") == 0) strcpy(sauvIdf[0],$1);
     					else strcpy(sauvIdf[1],$1); }   }           							   
 		 	 | idftab{ 
+				  if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
 			  if(doubleDeclaration($1)==0) 
 			  printf("Erreur semantique: %s variable non declaree a la ligne %d\n",$1,nb_ligne);   
 			  else
@@ -185,11 +186,14 @@ LIST_IDF : idf sep LIST_IDF { if(doubleDeclaration($1)==0)   { insererTYPE($1,sa
 							    else 
 								printf("Erreur semantique: Double declaration  de %s a la ligne %d et a la colonne %d\n",$1,nb_ligne,col);
 							  }
-	 	 | idftab sep LIST_IDF { if(doubleDeclaration($1)==0)   { insererTYPE($1,sauvType);}
+	 	 | idftab sep LIST_IDF {if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
+			  					 if(doubleDeclaration($1)==0)   { insererTYPE($1,sauvType);}
 							    else 
 								printf("Erreur semantique: Double declaration  de %s a la ligne %d et a la colonne %d\n",$1,nb_ligne,col);
 							  }
-	 	 | idftab { if(doubleDeclaration($1)==0)   { insererTYPE($1,sauvType);}
+	 	 | idftab { 
+			  if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
+			  if(doubleDeclaration($1)==0)   { insererTYPE($1,sauvType);}
 							    else 
 								printf("Erreur semantique: Double declaration  de %s a la ligne %d et a la colonne %d\n",$1,nb_ligne,col);
 							  }
@@ -242,7 +246,7 @@ INST_AFF :  IDF aff CST fin {
 							strcpy(sauvIdf[0],"");}
 							else printf ("Erreur semantique Type de variables incompatibles a la ligne %d et a la colonne %d \n",nb_ligne,col);
 							} 
-	 |  IDF aff idftab fin {
+	 |  IDF aff idftab fin {if(!rechercheBib("ARRAY")){printf("Erreur semantique: Bibliotheque manquante a la ligne %d et a la colonne %d\n",nb_ligne,col) ;}
 		 					if(CompatibleType(sauvIdf1,$3) == 1) {
 							insertValEntiere(sauvIdf1,GetValue($3)) ;
 							strcpy(sauvIdf[0],"");}
